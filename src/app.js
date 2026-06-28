@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 
+const authRoutes = require("./routes/authRoutes");
+
 const app = express();
 
 app.use(cors());
@@ -11,5 +13,7 @@ app.get("/", (req, res) => {
     message: "Stock Control API is running",
   });
 });
+
+app.use("/auth", authRoutes);
 
 module.exports = app;
