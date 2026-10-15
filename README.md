@@ -1,5 +1,7 @@
 # Stock Control API
 
+[![Tests](https://github.com/alexnervrs/stock-control-api/actions/workflows/tests.yml/badge.svg)](https://github.com/alexnervrs/stock-control-api/actions/workflows/tests.yml)
+
 A REST API for inventory management, built with Node.js, Express, Prisma, SQLite and JWT authentication.
 
 This project simulates a stock control system for internal business operations, allowing users to manage products, categories, suppliers, stock entries, stock outputs, movement history and low stock alerts.
@@ -15,6 +17,8 @@ This project simulates a stock control system for internal business operations, 
 * CORS
 * Dotenv
 * Nodemon
+* Jest and Supertest (automated tests)
+* GitHub Actions (continuous integration)
 
 ## Features
 
@@ -69,6 +73,10 @@ src
 │   └── supplierService.js
 ├── app.js
 └── server.js
+tests
+├── auth.test.js
+├── products.test.js
+└── stock.test.js
 ```
 
 ## API Routes
@@ -133,11 +141,10 @@ Install dependencies:
 npm install
 ```
 
-Create a `.env` file in the project root:
+Create a `.env` file in the project root based on `.env.example`:
 
-```env
-DATABASE_URL="file:./dev.db"
-JWT_SECRET="your_jwt_secret"
+```bash
+cp .env.example .env
 ```
 
 Run Prisma migrations:
@@ -157,6 +164,25 @@ The API will run at:
 ```bash
 http://localhost:3333
 ```
+
+## Tests
+
+The project has automated tests written with **Jest** and **Supertest**. The Prisma Client is mocked, so the tests run without a database and focus on the API behavior and business rules.
+
+```bash
+npm test
+```
+
+What is covered (19 tests):
+
+| Area | Scenarios |
+| ---- | --------- |
+| Authentication | User registration, password hashed with bcrypt, required fields, duplicated e-mail, login with valid and invalid credentials |
+| Protected routes | Request without token and with invalid token returns `401` |
+| Products | Creation linked to a category, required fields, nonexistent category or supplier, product not found (`404`) |
+| Stock | Entry adds quantity and records an `IN` movement, output subtracts and records an `OUT` movement, negative quantity, output greater than available stock is blocked, low stock query |
+
+Tests also run automatically on every push through GitHub Actions.
 
 ## Example Request
 
